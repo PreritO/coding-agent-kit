@@ -9,9 +9,12 @@
 // Do the steps in SECURITY.md before connecting any channel.
 // ─────────────────────────────────────────────────────────────────────────────
 {
-  // ── Model: bring your own Anthropic key (set via `openclaw onboard` or `models set`)
+  // ── Model: conversational brain = ChatGPT Pro via Codex OAuth.
+  //    Auth is set by `openclaw onboard --auth-choice openai` (NOT stored in this file).
+  //    ⚠️ Gray-area for 24/7 + a shared 5h/weekly rate cap. When it throttles, switch to a
+  //    usage-billed key: `openclaw onboard --auth-choice openai-api-key` (set OPENAI_API_KEY).
   agent: {
-    model: "anthropic/<CURRENT_CLAUDE_MODEL>",   // confirm exact id via: openclaw models status
+    model: "openai/<CURRENT_OPENAI_MODEL>",   // confirm exact id via: openclaw models status
   },
 
   // ── Gateway: loopback only + token auth. NEVER bind 0.0.0.0 / expose port 18789.

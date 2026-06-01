@@ -1,13 +1,20 @@
-# Personal agent — cloud OpenClaw + Telegram + gbrain + Obsidian
+# Personal agent — the full "Garry rig" (OpenClaw + gbrain + gstack)
 
-A blueprint for an **always-on personal agent you text** (and dictate to with Wispr Flow), scoped to the safe, high-value v1:
+A runbook to replicate Garry Tan's setup: an **always-on agent you text** (and dictate to with Wispr Flow), backed by a shared brain, with an optional "text-it-to-code" superpower.
 
+**Core (safe, high-value):**
 - **Daily/weekly check-ins** — it messages *you* (morning / evening / weekly) and logs your replies.
 - **Capture** — you send meeting notes / todos; it files them as markdown in your Obsidian vault.
-- **Recall** — it answers "what did I decide about X?" from your accumulated brain.
-- **No email, no calendar, no money** in v1 — tiny blast radius, on purpose.
+- **Recall** — it answers "what did I decide about X?" from your accumulated brain (gbrain).
 
-> This is a **runbook you execute on your own cloud box** — not something that can be stood up from a laptop session, because it needs your VPS, your Telegram bot, your Supabase, and your API key. Everything here is the exact map plus ready-to-edit config. Do the [SECURITY](SECURITY.md) steps *before* connecting any channel.
+**Optional (makes it the full rig):**
+- **Text it to ship code** — a coding request spawns a Claude Code session running gstack discipline and reports a PR back. See [`gstack-coding-module.md`](gstack-coding-module.md).
+
+**Two providers, on purpose:**
+- **Conversational brain** (check-ins/capture/recall): **ChatGPT Pro** via OpenClaw's Codex OAuth. ⚠️ It works, but it's gray-area for 24/7 and rate-capped (a 5h + weekly window *shared with your interactive Codex*) — fine to start, but flip to an **OpenAI API key** when the caps bite (a one-line config change).
+- **Coding sessions** (optional module): spawn **Claude Code**, which needs its own **Anthropic** auth (an API key is cleanest). You can't power the coding part with ChatGPT Pro.
+
+> This is a **runbook you execute on your own cloud box** — it needs your VPS, Telegram bot, Supabase, and accounts. Everything here is the map plus ready-to-edit config. Do the [SECURITY](SECURITY.md) steps *before* connecting any channel.
 
 > ⚠️ Config keys below match OpenClaw's **v2026.5.x** docs. OpenClaw moves fast — verify each key against `openclaw --help` / docs.openclaw.ai on your installed version before trusting it.
 
@@ -62,8 +69,13 @@ openclaw security audit --fix
 openclaw doctor
 ```
 
-### 3. [you] Point it at Claude
-Set the Anthropic model + key during `openclaw onboard`, or `openclaw models set anthropic/<current-model>` then `openclaw models status` to confirm the exact ID.
+### 3. [you] Point it at your model (ChatGPT Pro)
+Authenticate the conversational brain with your ChatGPT Pro subscription via Codex OAuth:
+```bash
+openclaw onboard --auth-choice openai     # "Sign in with ChatGPT" (PKCE); --device-code for headless
+openclaw models status                    # confirm the active OpenAI model id
+```
+⚠️ This runs on a shared 5-hour + weekly cap and is gray-area for 24/7 use. When it throttles, switch to a usage-billed key with `openclaw onboard --auth-choice openai-api-key` (set `OPENAI_API_KEY`) — nothing else changes.
 
 ### 4. [you] gbrain on Supabase (the shared brain)
 - Easiest: on your **Mac**, run `/setup-gbrain` (you have it) and choose **Supabase** (auto-provision or paste a connection string). Note the Session Pooler URL.
@@ -90,6 +102,9 @@ Set the Anthropic model + key during `openclaw onboard`, or `openclaw models set
 - Copy [`AGENTS.md`](AGENTS.md) into the OpenClaw workspace (this is the agent's personality + rules: gbrain-first, capture-to-vault, no email/calendar, draft-don't-send).
 - Create the scheduled check-ins from [`cron-checkins.md`](cron-checkins.md).
 
+### 7.5 [optional] Add the "text-it-to-code" superpower (the full Garry rig)
+Wire OpenClaw to spawn Claude Code + gstack so you can text it a coding task and get a PR back. This part needs **Anthropic** auth for the spawned sessions (ChatGPT Pro can't drive it). See [`gstack-coding-module.md`](gstack-coding-module.md). Skip it if you only want the personal companion.
+
 ### 8. [you] Verify, then live
 ```bash
 openclaw security audit --deep
@@ -103,6 +118,7 @@ Confirm: unauthorized access fails, secrets are redacted in logs, only your ID c
 - [`openclaw.example.json5`](openclaw.example.json5) — hardened config template (Telegram, cron, gbrain MCP, vault workspace, sandbox, auth).
 - [`AGENTS.md`](AGENTS.md) — the agent's persona + behavioral rules.
 - [`cron-checkins.md`](cron-checkins.md) — exact commands for morning/evening/weekly check-ins.
+- [`gstack-coding-module.md`](gstack-coding-module.md) — *optional* "text-it-to-code" superpower (spawns Claude Code + gstack).
 - [`SECURITY.md`](SECURITY.md) — the hardening checklist. **Read first.**
 
 ## When you're ready for more
