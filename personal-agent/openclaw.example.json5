@@ -1,0 +1,60 @@
+// ─────────────────────────────────────────────────────────────────────────────
+// OpenClaw config TEMPLATE for a hardened, cloud, personal check-in agent.
+// Copy to ~/.openclaw/openclaw.json (it's JSON5 — comments allowed) and fill the
+// <PLACEHOLDERS>. This matches OpenClaw v2026.5.x docs — VERIFY each key against
+// `openclaw --help` / docs.openclaw.ai for YOUR installed version before trusting it.
+//
+// Scope: Telegram + scheduled check-ins + gbrain memory + Obsidian vault.
+// NO email / calendar / payments tools in v1 (smallest blast radius).
+// Do the steps in SECURITY.md before connecting any channel.
+// ─────────────────────────────────────────────────────────────────────────────
+{
+  // ── Model: bring your own Anthropic key (set via `openclaw onboard` or `models set`)
+  agent: {
+    model: "anthropic/<CURRENT_CLAUDE_MODEL>",   // confirm exact id via: openclaw models status
+  },
+
+  // ── Gateway: loopback only + token auth. NEVER bind 0.0.0.0 / expose port 18789.
+  gateway: {
+    bind: "loopback",                  // reach it over Tailscale Serve / SSH tunnel, not public
+    port: 18789,
+    auth: { mode: "token", token: "<LONG_RANDOM_TOKEN>" },   // openssl rand -hex 32
+  },
+
+  // ── Sandbox ALL tool execution in Docker (this is what the Claw Chain CVEs abused)
+  agents: {
+    defaults: {
+      workspace: "<ABSOLUTE_PATH_TO_SYNCED_OBSIDIAN_VAULT>",  // e.g. /home/you/vault
+      sandbox: { mode: "all", backend: "docker", scope: "session", workspaceAccess: "rw" },
+    },
+  },
+
+  // ── Tools: least privilege. Messaging profile, exec denied/ask, no elevated (outside-sandbox) exec.
+  tools: {
+    profile: "messaging",
+    exec: { security: "deny", ask: "always" },
+    elevated: { enabled: false },
+  },
+
+  // ── Telegram: pairing first; tighten to allowlist of YOUR numeric id after pairing.
+  channels: {
+    telegram: {
+      enabled: true,
+      botToken: "<BOTFATHER_TOKEN>",   // or tokenFile: "/path/to/token"
+      dmPolicy: "allowlist",            // start "pairing", then switch to "allowlist"
+      allowFrom: ["<YOUR_TELEGRAM_USER_ID>"],   // numeric id (openclaw logs --follow → from.id)
+      groups: { "*": { requireMention: true } },
+    },
+  },
+
+  // ── Cron: proactive check-ins (jobs defined via `openclaw cron create` — see cron-checkins.md)
+  cron: { enabled: true, store: "~/.openclaw/cron/jobs.json", maxConcurrentRuns: 8 },
+
+  // ── Memory: gbrain over MCP. Use a SUPABASE-backed brain so your local Claude Code
+  //    shares the same brain. (Get the exact serve command from gbrain's own setup.)
+  mcp: {
+    servers: {
+      gbrain: { command: "gbrain", args: ["serve"] },
+    },
+  },
+}

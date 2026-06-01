@@ -18,6 +18,7 @@ It gives you a disciplined **plan → implement → verify** workflow, a roster 
 | [`codex/agents/`](codex/agents) | The **same** agent roster as Codex `.toml` agents — one roster, both CLIs |
 | [`codex/`](codex) | Codex `.toml` agents, a templated MCP config, and [how Codex loads custom instructions](codex/README.md) (`AGENTS.md` / prompts / skills / agents) |
 | [`templates/`](templates) | A cross-harness [`AGENTS.md`](templates/AGENTS.md) starter (works for Codex + Claude via one symlink) |
+| [`personal-agent/`](personal-agent) | Blueprint for an always-on **personal** agent you text (cloud OpenClaw + Telegram + gbrain + Obsidian) — config, persona, check-ins, and a security checklist |
 | [`docs/`](docs) | The [skills-vs-agents model](docs/skills-vs-agents.md), the [agent-workflow principles](docs/agent-workflow-principles.md) (evidence-backed techniques + what to be skeptical of), and a [curated, verified list of the best community skills](docs/recommended-community-skills.md) |
 
 ---
