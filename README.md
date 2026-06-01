@@ -16,8 +16,9 @@ It gives you a disciplined **plan → implement → verify** workflow, a roster 
 | [`claude/agents/`](claude/agents) | Specialist subagents — `architect`, `reviewer`, `simplifier`, `security-reviewer`, `test-runner`, `build-validator`, `build-error-resolver`, `tdd-guide` |
 | [`claude/skills/`](claude/skills) | How to author your own skills (format + template) |
 | [`codex/agents/`](codex/agents) | The **same** agent roster as Codex `.toml` agents — one roster, both CLIs |
-| [`codex/config.example.toml`](codex/config.example.toml) | Template Codex config with MCP servers (secrets via env, never hardcoded) |
-| [`docs/`](docs) | The [skills-vs-agents model](docs/skills-vs-agents.md) and a [curated list of the best community skills](docs/recommended-community-skills.md) |
+| [`codex/`](codex) | Codex `.toml` agents, a templated MCP config, and [how Codex loads custom instructions](codex/README.md) (`AGENTS.md` / prompts / skills / agents) |
+| [`templates/`](templates) | A cross-harness [`AGENTS.md`](templates/AGENTS.md) starter (works for Codex + Claude via one symlink) |
+| [`docs/`](docs) | The [skills-vs-agents model](docs/skills-vs-agents.md), the [agent-workflow principles](docs/agent-workflow-principles.md) (evidence-backed techniques + what to be skeptical of), and a [curated, verified list of the best community skills](docs/recommended-community-skills.md) |
 
 ---
 
@@ -81,11 +82,13 @@ The agent roster is mirrored: `claude/agents/<name>.md` (Markdown + YAML frontma
 
 ## Community skills worth adding on top
 
-This kit is the *core loop*. For specialized power, layer on the best of the community — see [`docs/recommended-community-skills.md`](docs/recommended-community-skills.md). Highlights:
+This kit is the *core loop*. For specialized power, layer on the best of the community — see the [curated, verified list](docs/recommended-community-skills.md) (every star count / license / freshness checked against the GitHub API). Highlights:
 
-- [`anthropics/skills`](https://github.com/anthropics/skills) — official skills (document generation, webapp-testing, frontend-design, skill-creator).
+- [`anthropics/skills`](https://github.com/anthropics/skills) + [`openai/skills`](https://github.com/openai/skills) — the official Claude and Codex skill catalogs (incl. vendor skills from Trail of Bits, Vercel, Stripe…).
 - [`obra/superpowers`](https://github.com/obra/superpowers) — the dominant community framework (TDD, systematic debugging, planning, git worktrees).
-- [`garrytan/gstack`](https://github.com/garrytan/gstack) — headless-browser QA + a large skill pack (provides `/qa`, `/qa-design-review`, `/plan-ceo-review`, referenced by `/workflow`).
+- [`trailofbits/skills`](https://github.com/trailofbits/skills) — template-grade security/testing skills; [`backnotprop/plannotator`](https://github.com/backnotprop/plannotator) — visual plan review; [`garrytan/gstack`](https://github.com/garrytan/gstack) — headless-browser QA (provides `/qa`, `/plan-ceo-review`, referenced by `/workflow`).
+
+**Before you install a pile of skills,** read [`docs/agent-workflow-principles.md`](docs/agent-workflow-principles.md) — the evidence-backed techniques (plan-first, worktrees, hooks-as-guardrails) and the failure modes to design around (skills don't always fire, self-generated skills can *hurt*, context bloat is real).
 
 ---
 
