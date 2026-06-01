@@ -1,0 +1,17 @@
+# OS / editor
+.DS_Store
+*.swp
+.idea/
+.vscode/
+
+# Logs / deps
+node_modules/
+*.log
+
+# Secrets — NEVER commit a real config with tokens.
+# Ship codex/config.example.toml only; the real one is local.
+.env
+.env.local
+.env.*
+codex/config.toml
+.codex/config.toml

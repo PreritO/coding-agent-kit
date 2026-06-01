@@ -1,0 +1,32 @@
+# ─────────────────────────────────────────────────────────────────────────────
+# Codex configuration TEMPLATE
+#
+# Copy this to your real Codex config and fill in secrets there:
+#   • global:  ~/.codex/config.toml
+#   • project: .codex/config.toml   (gitignored by this kit — keep it local)
+#
+# ⚠️  NEVER hardcode API tokens in a committed file. Inject them from your
+#     environment or a secret manager. The Authorization header below shows the
+#     pattern; replace it with your own secret-loading approach at runtime.
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Linear (no auth header needed for the hosted MCP; auth handled in-app via OAuth)
+[mcp_servers.linear-server]
+url = "https://mcp.linear.app/mcp"
+
+# Render — requires an API key. Do NOT paste the token here.
+# Provide it via the environment, e.g. export RENDER_API_KEY="rnd_xxx"
+[mcp_servers.render]
+url = "https://mcp.render.com/mcp"
+
+[mcp_servers.render.http_headers]
+# Placeholder — substitute your real key at runtime, never commit it.
+Authorization = "Bearer ${RENDER_API_KEY}"
+
+# Vercel
+[mcp_servers.vercel]
+url = "https://mcp.vercel.com"
+
+# Add more MCP servers as needed, e.g.:
+# [mcp_servers.github]
+# url = "https://api.githubcopilot.com/mcp/"
